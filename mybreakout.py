@@ -1,29 +1,49 @@
+import random
+
 import pygame
 from pygame.locals import *
 from sys import exit
+from random import choice
 
-higth = 600
-length = 400
-x = length/2
-y = 550
+# Tamanho da tela
+screen_higth = 700
+screen_length = 650
 
-x_ball = length/2
-y_ball = higth/2
+# Posição da raquete
+paddle_x = screen_length / 2 - 7.5 / 2
+paddle_y = 650
 
-# Dire
-direct_1 = -1
-direct_2 = 0
+# Posição da bola
+ball_x = screen_length / 2
+ball_y = screen_higth / 2
+
+# Direções da bola
+ball_up = -1
+direction = [1, -1]
+ball_side = random.choice(direction)
+
+# Cores
+yellow = (200, 200, 0)
+green = (0, 240, 50)
+red = (200, 0, 0)
+blue = (0, 100, 200)
+orange = (200, 100, 0)
+white = (255, 255, 255)
+gray = (200, 200, 200)
 
 pygame.init()
 
-screen = pygame.display.set_mode((length, higth))
+#Criando a tela e um relogio
+screen = pygame.display.set_mode((screen_length, screen_higth))
 pygame.display.set_caption('MY BREAKOUT')
 clock = pygame.time.Clock()
 
+# Looping do jogo
 while True:
     clock.tick((120))
     screen.fill((0,0,0))
-
+    
+    # Captando o evento de saída
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -31,37 +51,44 @@ while True:
 
     # Controle da raquete
     if pygame.key.get_pressed()[K_RIGHT]:
-        x += 3
+        paddle_x += 5
     if pygame.key.get_pressed()[K_LEFT]:
-        x -= 3
+        paddle_x -= 5
 
     # Desenhando a raquete
-    paddle = pygame.draw.rect(screen, (160,100,0), (x, y, 50, 10))
-    ball = pygame.draw.circle(screen, (100,30,30), (x_ball, y_ball), 7.5)
+    paddle = pygame.draw.rect(screen, blue, (paddle_x, paddle_y, 40, 12.5))
+
+    # Desenhando a bola
+    ball = pygame.draw.circle(screen, green, (ball_x, ball_y), 7.5)
+
+    # Desenhando a parede
+    line_left = pygame.draw.line(screen, gray, (50, 0), (50, 700), 10)
+    pygame.draw.line(screen, blue, (50, 640), (50, 673.5), 10)
+
+    line_rigth = pygame.draw.line(screen, gray, (600, 0), (600, 700), 10)
+    pygame.draw.line(screen, blue, (600, 640), (600, 672.5), 10)
+
+    line_up = pygame.draw.line(screen, gray, (50, 0), (600, 0), 30)
 
     # Colisão da bola na parede
-    if y_ball > higth - 7.5:
-        direct_1 = 1
-    if y_ball < 0:
-        direct_1 = -1
-    if x_ball > length - 7.5:
-        direct_2 = 1
-    if x_ball < 0:
-        direct_2 = -1
+    if ball_x < 60:
+        ball_side *= -1
+    if ball_x > screen_length - 60:
+        ball_side *= -1
+    if ball_y < 30:
+        ball_up *= -1
+    if ball_y > screen_higth - 60:
+        ball_up *= -1
+
 
     # Colisão da raquete na parede
-    if x < 0:
-        x += 3
-    if x > length - 50:
-        x -= 3
-
-    # Movimentando a bola
-    y_ball -= direct_1
-    x_ball -= direct_2
-
-    # Colisão da bola na raquete
-    if paddle.colliderect(ball):
-        direct_1 += 0.5
-        direct_2 -= 0.5
+    if paddle_x < 50:
+        paddle_x += 5
+    if paddle_x > screen_length - 90:
+        paddle_x -= 5
+    
+    # Movimentação da bola
+    '''ball_x -= ball_side
+    ball_y += ball_up'''
 
     pygame.display.update()
