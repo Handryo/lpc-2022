@@ -1,5 +1,4 @@
 import random
-
 import pygame
 from pygame.locals import *
 from sys import exit
@@ -33,7 +32,7 @@ gray = (200, 200, 200)
 
 pygame.init()
 
-#Criando a tela e um relogio
+# Criando a tela e um relogio
 screen = pygame.display.set_mode((screen_length, screen_higth))
 pygame.display.set_caption('MY BREAKOUT')
 clock = pygame.time.Clock()
